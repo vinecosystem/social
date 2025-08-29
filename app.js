@@ -1,4 +1,4 @@
-// 👉 VinSocial.v3 – hỗ trợ xem bài khi chưa kết nối ví, copy ví, tìm kiếm
+// 👉 VinSocial
 const vinSocialAddress = "0xAdd06EcD128004bFd35057d7a765562feeB77798";
 const vinTokenAddress = "0x941F63807401efCE8afe3C9d88d368bAA287Fac4";
 
@@ -823,7 +823,7 @@ window.onload = async () => {
   }
 };
 
-// 👉 Kết nối ví
+// 👉 connect
 async function connectWallet() {
   await provider.send("eth_requestAccounts", []);
   signer = provider.getSigner();
@@ -833,7 +833,7 @@ async function connectWallet() {
   await updateUI();
 }
 
-// 👉 Ngắt kết nối ví
+// 👉 
 function disconnectWallet() {
   userAddress = null;
   isRegistered = false;
@@ -844,13 +844,13 @@ function disconnectWallet() {
   document.getElementById("mainContent").innerHTML = `<p class="tip">Tip: Use VIC chain in MetaMask. On mobile, open in the wallet's browser (e.g. Viction, MetaMask).</p>`;
 }
 
-// 👉 Gọi hợp đồng khi đã kết nối
+// 👉 
 async function setupContracts() {
   vinSocialContract = new ethers.Contract(vinSocialAddress, vinSocialAbi, signer);
   vinTokenContract = new ethers.Contract(vinTokenAddress, vinTokenAbi, signer);
 }
 
-// 👉 Tự kết nối lại nếu đã từng kết nối
+// 👉 
 async function tryAutoConnect() {
   const accounts = await provider.send("eth_accounts", []);
   if (accounts.length > 0) {
@@ -863,7 +863,7 @@ async function tryAutoConnect() {
   }
 }
 
-// 👉 Hiển thị số dư ví và cập nhật menu
+// 👉 
 async function updateUI() {
   const vinBal = await vinTokenContract.balanceOf(userAddress);
   const vicBal = await provider.getBalance(userAddress);
@@ -883,19 +883,19 @@ async function updateUI() {
   showHome(true);
 }
 
-// 👉 Nút copy ví
+// 👉 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
     alert("Address copied to clipboard!");
   });
 }
 
-// 👉 Rút gọn ví (dùng cho hồ sơ, comment, v.v.)
+// 👉 
 function shorten(addr) {
   return addr.slice(0, 6) + "..." + addr.slice(-4);
 }
 
-// 👉 Hiển thị menu điều hướng
+// 👉 
 function updateMenu() {
   const nav = document.getElementById("mainNav");
   nav.style.display = "flex";
@@ -917,7 +917,7 @@ function updateMenu() {
   }
 }
 
-// 👉 Tìm kiếm theo địa chỉ ví
+// 👉 
 function searchByAddress() {
   const input = document.getElementById("searchInput").value.trim();
   if (!ethers.utils.isAddress(input)) {
@@ -927,11 +927,11 @@ function searchByAddress() {
   viewProfile(input);
 }
 
-// 👉 Gán sự kiện kết nối / ngắt kết nối
+// 👉 
 document.getElementById("connectBtn").onclick = connectWallet;
 document.getElementById("disconnectBtn").onclick = disconnectWallet;
 
-// 👉 Hiển thị bài viết mới nhất (gồm ❤️, 🔁, 👁️ – không gọi viewPost để tiết kiệm gas)
+// 👉 
 async function showHome(reset = false) {
   if (reset) {
     lastPostId = 0;
@@ -1030,13 +1030,13 @@ async function showHome(reset = false) {
   }
 }
 
-// 👉 Dịch bài viết qua Google Translate
+// 👉 
 function translatePost(text) {
   const url = `https://translate.google.com/?sl=auto&tl=en&text=${encodeURIComponent(text)}&op=translate`;
   window.open(url, "_blank");
 }
 
-// 👉 Hiển thị form đăng ký tài khoản
+// 👉 
 function showRegister() {
   if (isRegistered) return alert("You are already registered.");
   document.getElementById("mainContent").innerHTML = `
@@ -1055,7 +1055,7 @@ function showRegister() {
   `;
 }
 
-// 👉 Gửi yêu cầu đăng ký tài khoản
+// 👉 
 async function registerUser() {
   const name = document.getElementById("regName").value.trim();
   const bio = document.getElementById("regBio").value.trim();
@@ -1076,7 +1076,7 @@ async function registerUser() {
   }
 }
 
-// 👉 Hiển thị form đăng bài
+// 👉 
 function showNewPost() {
   if (!isRegistered) return alert("You must register to post.");
   document.getElementById("mainContent").innerHTML = `
@@ -1093,7 +1093,7 @@ function showNewPost() {
   `;
 }
 
-// 👉 Gửi bài viết
+// 👉 
 async function createPost() {
   const title = document.getElementById("postTitle").value.trim();
   const content = document.getElementById("postContent").value.trim();
@@ -1109,13 +1109,13 @@ async function createPost() {
   }
 }
 
-// 👉 Tự động giãn chiều cao textarea
+// 👉 
 function autoResize(textarea) {
   textarea.style.height = 'auto';
   textarea.style.height = textarea.scrollHeight + 'px';
 }
 
-// 👉 Like bài viết
+// 👉 Like 
 async function likePost(postId) {
   try {
     const tx = await vinSocialContract.likePost(postId);
@@ -1127,7 +1127,7 @@ async function likePost(postId) {
   }
 }
 
-// 👉 Hiển thị & gửi bình luận
+// 👉 
 async function showComments(postId) {
   const el = document.getElementById(`comments-${postId}`);
   if (el.innerHTML) {
@@ -1161,7 +1161,7 @@ async function showComments(postId) {
   }
 }
 
-// 👉 Gửi bình luận
+// 👉 
 async function addComment(postId) {
   const msg = document.getElementById(`comment-${postId}`).value.trim();
   try {
@@ -1175,7 +1175,7 @@ async function addComment(postId) {
   }
 }
 
-// 👉 Share bài viết
+// 👉 
 async function sharePost(postId) {
   try {
     const tx = await vinSocialContract.sharePost(postId);
@@ -1187,7 +1187,7 @@ async function sharePost(postId) {
   }
 }
 
-// 👉 Xem hồ sơ người dùng
+// 👉 
 async function viewProfile(addr) {
   try {
     const user = await vinSocialReadOnly.users(addr);
@@ -1240,13 +1240,13 @@ async function viewProfile(addr) {
   }
 }
 
-// 👉 Xem hồ sơ chính mình
+// 👉 
 async function showProfile() {
   if (!userAddress) return alert("Wallet not connected");
   await viewProfile(userAddress);
 }
 
-// 👉 Follow người dùng khác
+// 👉 
 async function followUser(addr) {
   try {
     const tx = await vinSocialContract.follow(addr);
@@ -1259,7 +1259,7 @@ async function followUser(addr) {
   }
 }
 
-// 👉 Unfollow người dùng khác
+// 👉 
 async function unfollowUser(addr) {
   try {
     const tx = await vinSocialContract.unfollow(addr);
@@ -1272,17 +1272,17 @@ async function unfollowUser(addr) {
   }
 }
 
-// 👉 (Chuẩn bị tương lai) Gợi ý người dùng nổi bật
+// 👉 
 async function suggestUsers() {
   return [];
 }
 
-// 👉 (Chuẩn bị tương lai) Gợi ý bài viết nổi bật
+// 👉 
 async function suggestPosts() {
   return [];
 }
 
-// 👉 Tìm kiếm mở rộng (ý tưởng tương lai)
+// 👉 
 async function searchByAddressOrKeyword(input) {
   if (ethers.utils.isAddress(input)) {
     await viewProfile(input);
@@ -1291,10 +1291,10 @@ async function searchByAddressOrKeyword(input) {
   }
 }
 
-<!-- ▼▼▼ PASTE VÀO CUỐI app.js ▼▼▼ -->
-// === Patch: Long posts + xuống dòng + auto-resize (UI-only) ===
+<!--  -->
+// ===  ===
 (function () {
-  // 1) Tiêm CSS để giữ xuống dòng khi HIỂN THỊ bài & comment
+  // 
   const id = 'vin-patch-prewrap';
   if (!document.getElementById(id)) {
     const s = document.createElement('style');
@@ -1307,7 +1307,7 @@ async function searchByAddressOrKeyword(input) {
     document.head.appendChild(s);
   }
 
-  // 2) Fallback autoResize nếu file cũ chưa có
+  // 
   if (typeof window.autoResize !== 'function') {
     window.autoResize = function (ta) {
       ta.style.height = 'auto';
@@ -1315,7 +1315,7 @@ async function searchByAddressOrKeyword(input) {
     };
   }
 
-  // 3) Override showNewPost: đặt maxlength=20000 + gắn auto-resize & giữ Enter
+  // 3) 
   window.showNewPost = function () {
     document.getElementById("mainContent").innerHTML = `
       <h2>New Post</h2>
@@ -1332,15 +1332,15 @@ async function searchByAddressOrKeyword(input) {
     const ta = document.getElementById('postContent');
     const onChange = () => window.autoResize(ta);
     ['input','keyup','change'].forEach(evt => ta.addEventListener(evt, onChange));
-    ta.addEventListener('paste', () => setTimeout(onChange, 0)); // sau khi dán mới đo scrollHeight
-    onChange(); // set height lần đầu
+    ta.addEventListener('paste', () => setTimeout(onChange, 0)); // 
+    onChange(); // 
   };
 
-  // 4) Override createPost: không làm mất xuống dòng + chặn >20000
+  // 4) 
   window.createPost = async function () {
     const title = document.getElementById("postTitle").value.trim();
     const contentEl = document.getElementById("postContent");
-    const content = contentEl.value; // GIỮ nguyên \n, không .trim() để tránh mất xuống dòng cuối
+    const content = contentEl.value; // 
     const media = (document.getElementById("postMedia").value || '').trim();
 
     if (content.length > 20000) {
@@ -1359,4 +1359,4 @@ async function searchByAddressOrKeyword(input) {
     }
   };
 })();
-<!-- ▲▲▲ HẾT PATCH ▲▲▲ -->
+<!-- ▲▲▲ ▲▲▲ -->
