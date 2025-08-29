@@ -809,31 +809,34 @@ const vinSocialAbi = [
   }
 ];
 
-// 👉 Load giao diện khi mở trang
+// 👉 Load the interface when the page is opened
 window.onload = async () => {
+  // Check if Ethereum provider is available
   if (window.ethereum) {
     provider = new ethers.providers.Web3Provider(window.ethereum);
     signer = provider.getSigner();
     vinSocialReadOnly = new ethers.Contract(vinSocialAddress, vinSocialAbi, provider);
-    await tryAutoConnect();
+    await tryAutoConnect(); // Attempt to automatically reconnect if already connected
   } else {
+    // If no provider, use a fallback JSON RPC provider
     provider = new ethers.providers.JsonRpcProvider("https://rpc.viction.xyz");
     vinSocialReadOnly = new ethers.Contract(vinSocialAddress, vinSocialAbi, provider);
-    showHome(true); // vẫn cho xem bài khi chưa có ví
+    showHome(true); // Show home page even if wallet is not connected
   }
 };
 
-// 👉 Kết nối ví
+// 👉 Connect wallet function
 async function connectWallet() {
+  // Request user's wallet accounts
   await provider.send("eth_requestAccounts", []);
   signer = provider.getSigner();
   userAddress = await signer.getAddress();
-  await setupContracts();
+  await setupContracts(); // Set up contracts with the signer
   vinSocialReadOnly = new ethers.Contract(vinSocialAddress, vinSocialAbi, provider);
-  await updateUI();
+  await updateUI(); // Update the UI with wallet info
 }
 
-// 👉 Ngắt kết nối ví
+// 👉 Disconnect wallet function
 function disconnectWallet() {
   userAddress = null;
   isRegistered = false;
@@ -844,26 +847,26 @@ function disconnectWallet() {
   document.getElementById("mainContent").innerHTML = `<p class="tip">Tip: Use VIC chain in MetaMask. On mobile, open in the wallet's browser (e.g. Viction, MetaMask).</p>`;
 }
 
-// 👉 Gọi hợp đồng khi đã kết nối
+// 👉 Set up contracts when wallet is connected
 async function setupContracts() {
   vinSocialContract = new ethers.Contract(vinSocialAddress, vinSocialAbi, signer);
   vinTokenContract = new ethers.Contract(vinTokenAddress, vinTokenAbi, signer);
 }
 
-// 👉 Tự kết nối lại nếu đã từng kết nối
+// 👉 Auto reconnect if already connected previously
 async function tryAutoConnect() {
   const accounts = await provider.send("eth_accounts", []);
   if (accounts.length > 0) {
     userAddress = accounts[0];
     signer = provider.getSigner();
     await setupContracts();
-    await updateUI();
+    await updateUI(); // Update the UI with wallet info
   } else {
-    showHome(true);
+    showHome(true); // Show the home page if no accounts are found
   }
 }
 
-// 👉 Hiển thị số dư ví và cập nhật menu
+// 👉 Update wallet balance and UI
 async function updateUI() {
   const vinBal = await vinTokenContract.balanceOf(userAddress);
   const vicBal = await provider.getBalance(userAddress);
@@ -879,23 +882,23 @@ async function updateUI() {
   document.getElementById("connectBtn").style.display = "none";
   document.getElementById("disconnectBtn").style.display = "inline-block";
   isRegistered = await vinSocialContract.isRegistered(userAddress);
-  updateMenu();
+  updateMenu(); // Update the menu based on registration status
   showHome(true);
 }
 
-// 👉 Nút copy ví
+// 👉 Copy wallet address to clipboard
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
     alert("Address copied to clipboard!");
   });
 }
 
-// 👉 Rút gọn ví (dùng cho hồ sơ, comment, v.v.)
+// 👉 Shorten wallet address (used for profiles, comments, etc.)
 function shorten(addr) {
   return addr.slice(0, 6) + "..." + addr.slice(-4);
 }
 
-// 👉 Hiển thị menu điều hướng
+// 👉 Update the navigation menu based on registration status
 function updateMenu() {
   const nav = document.getElementById("mainNav");
   nav.style.display = "flex";
@@ -917,21 +920,21 @@ function updateMenu() {
   }
 }
 
-// 👉 Tìm kiếm theo địa chỉ ví
+// 👉 Search by wallet address
 function searchByAddress() {
   const input = document.getElementById("searchInput").value.trim();
   if (!ethers.utils.isAddress(input)) {
     alert("Please enter a valid wallet address.");
     return;
   }
-  viewProfile(input);
+  viewProfile(input); // View profile based on wallet address
 }
 
-// 👉 Gán sự kiện kết nối / ngắt kết nối
+// 👉 Connect and disconnect wallet events
 document.getElementById("connectBtn").onclick = connectWallet;
 document.getElementById("disconnectBtn").onclick = disconnectWallet;
 
-// 👉 Hiển thị bài viết mới nhất (gồm ❤️, 🔁, 👁️ – không gọi viewPost để tiết kiệm gas)
+// 👉 Display the latest posts (❤️, 🔁, 👁️ – without calling viewPost to save gas)
 async function showHome(reset = false) {
   if (reset) {
     lastPostId = 0;
@@ -982,10 +985,10 @@ async function showHome(reset = false) {
       const media = post[3];
       const time = new Date(post[4] * 1000).toLocaleString();
 
-      const [likes, shares, views] = await Promise.all([
-        vinSocialReadOnly.likeCount(i),
-        vinSocialReadOnly.shareCount(i),
-        vinSocialReadOnly.viewCount(i)
+      const [likes, shares, views] = await Promise.all([ 
+        vinSocialReadOnly.likeCount(i), 
+        vinSocialReadOnly.shareCount(i), 
+        vinSocialReadOnly.viewCount(i) 
       ]);
 
       html += `
@@ -1030,13 +1033,13 @@ async function showHome(reset = false) {
   }
 }
 
-// 👉 Dịch bài viết qua Google Translate
+// 👉 Translate post using Google Translate
 function translatePost(text) {
   const url = `https://translate.google.com/?sl=auto&tl=en&text=${encodeURIComponent(text)}&op=translate`;
   window.open(url, "_blank");
 }
 
-// 👉 Hiển thị form đăng ký tài khoản
+// 👉 Show registration form
 function showRegister() {
   if (isRegistered) return alert("You are already registered.");
   document.getElementById("mainContent").innerHTML = `
@@ -1055,7 +1058,7 @@ function showRegister() {
   `;
 }
 
-// 👉 Gửi yêu cầu đăng ký tài khoản
+// 👉 Register user account
 async function registerUser() {
   const name = document.getElementById("regName").value.trim();
   const bio = document.getElementById("regBio").value.trim();
@@ -1069,14 +1072,14 @@ async function registerUser() {
     const tx = await vinSocialContract.register(name, bio, avatar, website);
     await tx.wait();
     alert("Registration successful!");
-    await updateUI();
+    await updateUI(); // Update the UI after registration
   } catch (err) {
     alert("Registration failed.");
     console.error(err);
   }
 }
 
-// 👉 Hiển thị form đăng bài
+// 👉 Show new post form
 function showNewPost() {
   if (!isRegistered) return alert("You must register to post.");
   document.getElementById("mainContent").innerHTML = `
@@ -1093,7 +1096,7 @@ function showNewPost() {
   `;
 }
 
-// 👉 Gửi bài viết
+// 👉 Create a new post
 async function createPost() {
   const title = document.getElementById("postTitle").value.trim();
   const content = document.getElementById("postContent").value.trim();
@@ -1102,20 +1105,20 @@ async function createPost() {
     const tx = await vinSocialContract.createPost(title, content, media);
     await tx.wait();
     alert("Post created!");
-    await showHome(true);
+    await showHome(true); // Show the latest posts after creating
   } catch (err) {
     alert("Post failed.");
     console.error(err);
   }
 }
 
-// 👉 Tự động giãn chiều cao textarea
+// 👉 Auto-resize textarea based on content
 function autoResize(textarea) {
   textarea.style.height = 'auto';
   textarea.style.height = textarea.scrollHeight + 'px';
 }
 
-// 👉 Like bài viết
+// 👉 Like a post
 async function likePost(postId) {
   try {
     const tx = await vinSocialContract.likePost(postId);
@@ -1127,7 +1130,7 @@ async function likePost(postId) {
   }
 }
 
-// 👉 Hiển thị & gửi bình luận
+// 👉 Show & send comments
 async function showComments(postId) {
   const el = document.getElementById(`comments-${postId}`);
   if (el.innerHTML) {
@@ -1161,21 +1164,21 @@ async function showComments(postId) {
   }
 }
 
-// 👉 Gửi bình luận
+// 👉 Send a comment
 async function addComment(postId) {
   const msg = document.getElementById(`comment-${postId}`).value.trim();
   try {
     const tx = await vinSocialContract.commentOnPost(postId, msg);
     await tx.wait();
     alert("Comment added!");
-    await showComments(postId); // refresh
+    await showComments(postId); // Refresh comments
   } catch (err) {
     alert("Failed to comment.");
     console.error(err);
   }
 }
 
-// 👉 Share bài viết
+// 👉 Share a post
 async function sharePost(postId) {
   try {
     const tx = await vinSocialContract.sharePost(postId);
@@ -1187,7 +1190,7 @@ async function sharePost(postId) {
   }
 }
 
-// 👉 Xem hồ sơ người dùng
+// 👉 View user's profile
 async function viewProfile(addr) {
   try {
     const user = await vinSocialReadOnly.users(addr);
@@ -1240,13 +1243,13 @@ async function viewProfile(addr) {
   }
 }
 
-// 👉 Xem hồ sơ chính mình
+// 👉 Show own profile
 async function showProfile() {
   if (!userAddress) return alert("Wallet not connected");
   await viewProfile(userAddress);
 }
 
-// 👉 Follow người dùng khác
+// 👉 Follow a user
 async function followUser(addr) {
   try {
     const tx = await vinSocialContract.follow(addr);
@@ -1259,7 +1262,7 @@ async function followUser(addr) {
   }
 }
 
-// 👉 Unfollow người dùng khác
+// 👉 Unfollow a user
 async function unfollowUser(addr) {
   try {
     const tx = await vinSocialContract.unfollow(addr);
@@ -1272,17 +1275,17 @@ async function unfollowUser(addr) {
   }
 }
 
-// 👉 (Chuẩn bị tương lai) Gợi ý người dùng nổi bật
+// 👉 Suggest popular users (future feature)
 async function suggestUsers() {
   return [];
 }
 
-// 👉 (Chuẩn bị tương lai) Gợi ý bài viết nổi bật
+// 👉 Suggest popular posts (future feature)
 async function suggestPosts() {
   return [];
 }
 
-// 👉 Tìm kiếm mở rộng (ý tưởng tương lai)
+// 👉 Extended search (future feature)
 async function searchByAddressOrKeyword(input) {
   if (ethers.utils.isAddress(input)) {
     await viewProfile(input);
@@ -1290,73 +1293,3 @@ async function searchByAddressOrKeyword(input) {
     alert("Currently only wallet address search is supported.");
   }
 }
-
-<!-- ▼▼▼ PASTE VÀO CUỐI app.js ▼▼▼ -->
-// === Patch: Long posts + xuống dòng + auto-resize (UI-only) ===
-(function () {
-  // 1) Tiêm CSS để giữ xuống dòng khi HIỂN THỊ bài & comment
-  const id = 'vin-patch-prewrap';
-  if (!document.getElementById(id)) {
-    const s = document.createElement('style');
-    s.id = id;
-    s.textContent = `
-      .post .content { white-space: pre-wrap; word-break: break-word; }
-      .comments p { white-space: pre-wrap; }
-      textarea#postContent { overflow: hidden; resize: none; }
-    `;
-    document.head.appendChild(s);
-  }
-
-  // 2) Fallback autoResize nếu file cũ chưa có
-  if (typeof window.autoResize !== 'function') {
-    window.autoResize = function (ta) {
-      ta.style.height = 'auto';
-      ta.style.height = ta.scrollHeight + 'px';
-    };
-  }
-
-  // 3) Override showNewPost: đặt maxlength=20000 + gắn auto-resize & giữ Enter
-  window.showNewPost = function () {
-    document.getElementById("mainContent").innerHTML = `
-      <h2>New Post</h2>
-      <form onsubmit="createPost(); return false;">
-        <label>Title</label>
-        <input type="text" id="postTitle" maxlength="80"/>
-        <label>What's on your mind?</label>
-        <textarea id="postContent" maxlength="20000" placeholder="Write here... (max 20,000 characters)"></textarea>
-        <label>Image URL (optional)</label>
-        <input type="text" id="postMedia" placeholder="https://..."/>
-        <button type="submit">Post</button>
-      </form>
-    `;
-    const ta = document.getElementById('postContent');
-    const onChange = () => window.autoResize(ta);
-    ['input','keyup','change'].forEach(evt => ta.addEventListener(evt, onChange));
-    ta.addEventListener('paste', () => setTimeout(onChange, 0)); // sau khi dán mới đo scrollHeight
-    onChange(); // set height lần đầu
-  };
-
-  // 4) Override createPost: không làm mất xuống dòng + chặn >20000
-  window.createPost = async function () {
-    const title = document.getElementById("postTitle").value.trim();
-    const contentEl = document.getElementById("postContent");
-    const content = contentEl.value; // GIỮ nguyên \n, không .trim() để tránh mất xuống dòng cuối
-    const media = (document.getElementById("postMedia").value || '').trim();
-
-    if (content.length > 20000) {
-      alert(`Your post is ${content.length} characters. The maximum is 20,000.`);
-      return;
-    }
-
-    try {
-      const tx = await vinSocialContract.createPost(title, content, media);
-      await tx.wait();
-      alert("Post created!");
-      await showHome(true);
-    } catch (err) {
-      alert("Post failed.");
-      console.error(err);
-    }
-  };
-})();
-<!-- ▲▲▲ HẾT PATCH ▲▲▲ -->
