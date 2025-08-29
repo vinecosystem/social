@@ -1,4 +1,4 @@
-// 👉 VinSocial.v3 – hỗ trợ xem bài khi chưa kết nối ví, copy ví, tìm kiếm
+// 👉 VinSocial
 const vinSocialAddress = "0xAdd06EcD128004bFd35057d7a765562feeB77798";
 const vinTokenAddress = "0x941F63807401efCE8afe3C9d88d368bAA287Fac4";
 
