@@ -1,4 +1,4 @@
-/* 🌐 Reset và cấu trúc chung */
+/* 🌐 Reset */
 * {
   margin: 0;
   padding: 0;
@@ -18,7 +18,7 @@ a {
   color: inherit;
 }
 
-/* 🧾 Thông điệp đầu trang (tip + made) */
+/* 🧾  */
 .top-message {
   text-align: center;
   padding: 8px 12px;
@@ -73,7 +73,7 @@ header p {
   color: #666;
 }
 
-/* 👛 Khu vực ví */
+/* 👛  */
 .wallet-area {
   display: flex;
   align-items: center;
@@ -101,7 +101,7 @@ header p {
   font-family: monospace;
 }
 
-/* 💰 Thanh thông tin giá VIN + liên kết */
+/* 💰  */
 .info-bar {
   display: flex;
   flex-wrap: wrap;
@@ -125,7 +125,7 @@ header p {
   text-decoration: underline;
 }
 
-/* 📂 Thanh menu chính */
+/* 📂  */
 nav {
   display: flex;
   gap: 10px;
@@ -154,14 +154,14 @@ nav {
 
 
 
-/* 📰 Khu vực nội dung chính */
+/* 📰  */
 main {
   max-width: 720px;
   margin: 20px auto;
   padding: 0 15px;
 }
 
-/* 🧾 Bài viết */
+/* 🧾  */
 .post {
   background: #fff;
   padding: 15px;
@@ -199,7 +199,7 @@ main {
   margin-top: 5px;
 }
 
-/* 🎯 Hành động */
+/* 🎯  */
 .post .actions {
   display: flex;
   flex-wrap: wrap;
@@ -223,7 +223,7 @@ main {
   text-decoration: underline;
 }
 
-/* 📝 Form (đăng ký, đăng bài, comment) */
+/* 📝  */
 form {
   background: white;
   padding: 15px;
@@ -286,7 +286,7 @@ form button:hover {
   font-size: 14px;
 }
 
-/* 💡 Gợi ý & tip */
+/* 💡  */
 .tip {
   text-align: center;
   font-size: 13px;
@@ -294,7 +294,7 @@ form button:hover {
   margin: 20px;
 }
 
-/* ⬇️ Nút tải thêm bài */
+/* ⬇️  */
 main button {
   padding: 8px 16px;
   background: #007bff;
@@ -318,7 +318,7 @@ footer {
   color: #888;
 }
 
-/* ✅ Responsive cho điện thoại */
+/* ✅ Responsive  */
 @media (max-width: 600px) {
   header {
     flex-direction: column;
@@ -357,7 +357,7 @@ footer {
   }
 }
 
-/* 📋 Nút copy địa chỉ ví */
+/* 📋  */
 .wallet-area button[title="Copy"],
 .post .author button {
   padding: 2px 6px;
@@ -376,7 +376,7 @@ footer {
   background: #bbb;
 }
 
-/* 🔍 Ô tìm kiếm ví */
+/* 🔍  */
 #searchInput {
   padding: 6px;
   border: 1px solid #ccc;
@@ -385,7 +385,7 @@ footer {
   min-width: 180px;
 }
 
-/* 🔘 Nút tìm kiếm */
+/* 🔘  */
 nav form button {
   padding: 6px 10px;
   background: #007bff;
@@ -403,19 +403,19 @@ nav form button:hover {
 
 /* ==== Sticky Bottom Nav (VinSocial) ==== */
 :root {
-  --bn-bg: #ffffff;         /* nền thanh điều hướng */
-  --bn-text: #1161ff;       /* chữ xanh */
-  --bn-text-hover: #0a49bf; /* chữ khi hover */
+  --bn-bg: #ffffff;         /* */
+  --bn-text: #1161ff;       /*  */
+  --bn-text-hover: #0a49bf; /*  */
   --bn-shadow: 0 -6px 20px rgba(0,0,0,0.06);
   --bn-border: rgba(0,0,0,0.06);
 }
 
 body {
-  /* chừa khoảng trống cho thanh điều hướng để nội dung không bị che */
-  padding-bottom: 76px; /* chỉnh nếu bạn thêm/bớt chiều cao nav */
+  /* */
+  padding-bottom: 76px; /*  */
 }
 
-/* Vùng bao thanh điều hướng */
+/*  */
 .bottom-nav {
   position: sticky;
   position: -webkit-sticky;
@@ -429,18 +429,18 @@ body {
   padding: 10px env(safe-area-inset-right) calc(10px + env(safe-area-inset-bottom)) env(safe-area-inset-left);
 }
 
-/* Container các nút */
+/*  */
 .bn-container {
   max-width: 1100px;
   margin: 0 auto;
   display: flex;
-  flex-wrap: wrap;              /* tự xuống dòng trên màn hình nhỏ */
+  flex-wrap: wrap;              /*  */
   gap: 10px;
   align-items: center;
-  justify-content: center;      /* căn giữa đẹp trên cả mobile/desktop */
+  justify-content: center;      /*  */
 }
 
-/* Nút/link */
+/*  */
 .bn-link {
   display: inline-flex;
   align-items: center;
@@ -448,8 +448,8 @@ body {
   padding: 10px 14px;
   min-height: 40px;
   border-radius: 10px;
-  background: #fff;             /* nền trắng */
-  color: var(--bn-text);        /* chữ xanh */
+  background: #fff;             /*  */
+  color: var(--bn-text);        /* */
   font-weight: 700;
   font-size: 14px;
   line-height: 1;
@@ -457,7 +457,7 @@ body {
   border: 1px solid var(--bn-border);
   transition: transform .06s ease, box-shadow .2s ease, color .2s ease;
   box-shadow: 0 1px 0 rgba(0,0,0,0.04);
-  white-space: nowrap;          /* tránh vỡ chữ */
+  white-space: nowrap;          /* */
 }
 
 .bn-link:hover,
@@ -468,7 +468,7 @@ body {
   outline: none;
 }
 
-/* Điều chỉnh nhỏ cho màn hình rất nhỏ */
+/*  */
 @media (max-width: 360px) {
   .bn-link {
     padding: 9px 12px;
@@ -476,7 +476,7 @@ body {
   }
 }
 
-/* Desktop: tăng nhẹ kích thước và giãn cách */
+/* Desktop:  */
 @media (min-width: 992px) {
   .bn-container {
     gap: 12px;
